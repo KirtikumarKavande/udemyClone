@@ -10,6 +10,7 @@ import { z } from "zod";
 interface titleFormProps {
   initialData: {
     title: string;
+    courseId: string;
   };
 }
 
@@ -23,6 +24,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -35,7 +39,17 @@ const TitleForm = ({ initialData }: titleFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: initialData,
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const router = useRouter();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const res = await axios.patch(`/api/courses/${initialData.id}`,values);
+      toast.success("title updated success");
+      router.refresh();
+
+      setIsEditing((isEditing) => !isEditing);
+    } catch (error) {
+      toast.error("something went wrong");
+    }
     console.log("form", values);
   }
   const { isSubmitting, isValid } = form.formState;
