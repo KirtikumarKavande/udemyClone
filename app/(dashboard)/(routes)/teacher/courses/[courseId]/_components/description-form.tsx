@@ -7,45 +7,43 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-interface titleFormProps {
+interface DescriptionFormProps {
   initialData: {
-    title: string | null;
-    id: string | null;
+    description: string | null;
+    id: string;
   };
 }
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
-  title: z.string().min(2, {
-    message: "title must be at least 2 characters.",
+  description: z.string().min(2, {
+    message: "description must be at least 2 characters.",
   }),
 });
-const TitleForm = ({ initialData }: titleFormProps) => {
+const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: initialData.title || "",
-    },
+    defaultValues: { description: initialData.description || "" },
   });
   const router = useRouter();
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const res = await axios.patch(`/api/courses/${initialData.id}`, values);
-      toast.success("title updated success");
+      toast.success("description updated success");
       router.refresh();
 
       setIsEditing((isEditing) => !isEditing);
@@ -59,7 +57,7 @@ const TitleForm = ({ initialData }: titleFormProps) => {
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course Title
+        Course description
         <Button
           variant={"ghost"}
           onClick={() => setIsEditing((isEditing) => !isEditing)}
@@ -69,12 +67,16 @@ const TitleForm = ({ initialData }: titleFormProps) => {
           ) : (
             <>
               <PencilIcon className="h-4 w-4 mr-2" />
-              Edit Title
+              Edit description
             </>
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm ">{initialData?.title}</p>}
+      {!isEditing && (
+        <div className="text-sm ">
+          {initialData?.description || <p className="text-sm mt-2 italic">No description</p>}
+        </div>
+      )}
       {isEditing && (
         <Form {...form}>
           <form
@@ -83,13 +85,13 @@ const TitleForm = ({ initialData }: titleFormProps) => {
           >
             <FormField
               control={form.control}
-              name="title"
+              name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
+                    <Textarea
+                      placeholder="e.g. This course is about... "
                       disabled={isSubmitting}
-                      placeholder="e.g Advanced web Development"
                       {...field}
                     />
                   </FormControl>
@@ -98,6 +100,7 @@ const TitleForm = ({ initialData }: titleFormProps) => {
                 </FormItem>
               )}
             />
+
             <Button disabled={!isValid || isSubmitting} type="submit">
               Save
             </Button>
@@ -108,4 +111,4 @@ const TitleForm = ({ initialData }: titleFormProps) => {
   );
 };
 
-export default TitleForm;
+export default DescriptionForm;
