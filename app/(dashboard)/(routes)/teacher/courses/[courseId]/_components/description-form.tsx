@@ -57,7 +57,7 @@ const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course description
+        Course Description
         <Button
           variant={"ghost"}
           onClick={() => setIsEditing((isEditing) => !isEditing)}
@@ -67,14 +67,14 @@ const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
           ) : (
             <>
               <PencilIcon className="h-4 w-4 mr-2" />
-              Edit description
+              Edit Description
             </>
           )}
         </Button>
       </div>
       {!isEditing && (
         <div className="text-sm ">
-          {initialData?.description || <p className="text-sm mt-2 italic">No description</p>}
+          {initialData?.description || <p className="text-sm mt-1 italic">No Description</p>}
         </div>
       )}
       {isEditing && (
