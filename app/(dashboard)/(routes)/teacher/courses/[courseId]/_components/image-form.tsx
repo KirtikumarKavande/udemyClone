@@ -41,6 +41,7 @@ const ImageForm = ({ initialData }: ImageFormProps) => {
   });
   const router = useRouter();
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("values", values);
     try {
       const res = await axios.patch(`/api/courses/${initialData.id}`, values);
       toast.success("description updated success");
@@ -52,7 +53,6 @@ const ImageForm = ({ initialData }: ImageFormProps) => {
     }
     console.log("form", values);
   }
-  const { isSubmitting, isValid } = form.formState;
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">

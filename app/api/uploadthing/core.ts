@@ -13,8 +13,13 @@ export const ourFileRouter = {
   courseImage: f({ image: { maxFileSize: "4MB" } })
     .middleware(() => handleAuth())
     .onUploadComplete(async ({ metadata, file }) => {
-      return {success:"true" };
-    }),
+        // This code RUNS ON YOUR SERVER after upload
+        console.log("Upload complete for userId:", metadata.userId);
+   
+        console.log("file url", file.url);
+   
+        return { uploadedBy: metadata.userId };
+      }),
   courseAttachment: f(["text", "image", "video", "audio", "pdf"])
     .middleware(() => handleAuth())
     .onUploadComplete(async ({ metadata, file }) => {
