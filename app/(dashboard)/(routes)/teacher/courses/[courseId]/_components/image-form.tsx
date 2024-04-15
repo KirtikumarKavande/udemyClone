@@ -4,23 +4,12 @@ import { ImageIcon, Pencil, PencilIcon, PlusCircle } from "lucide-react";
 import React, { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 import "@uploadthing/react/styles.css";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 import { Course } from "@prisma/client";
 import Image from "next/image";
 import FileUpload from "@/components/file-upload";
@@ -35,16 +24,13 @@ const formSchema = z.object({
 });
 const ImageForm = ({ initialData }: ImageFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { imageUrl: initialData.imageUrl || "" },
-  });
+  
   const router = useRouter();
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("values", values);
     try {
       const res = await axios.patch(`/api/courses/${initialData.id}`, values);
-      toast.success("description updated success");
+      toast.success("Image updated success");
       router.refresh();
 
       setIsEditing((isEditing) => !isEditing);
