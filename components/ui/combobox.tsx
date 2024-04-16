@@ -1,72 +1,72 @@
-"use client";
+import React, { useState } from "react";
+import { Combobox } from "@headlessui/react";
 
-import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-interface comboBoxProps {
-  options: { label: string; value: string }[];
-  onChange: (value: string) => void;
-  value?: string;
+interface Person {
+  label: string;
+  value: string;
 }
 
-export function ComboboxDemo({ options, onChange, value }: comboBoxProps) {
-  const [open, setOpen] = React.useState(false);
+interface ComboboxProps {
+  selectedPerson: Person;
+  setSelectedPerson: React.Dispatch<React.SetStateAction<Person>>;
+  List: Person[];
+  onSubmit: () => void;
+}
 
+const MyCombobox: React.FC<ComboboxProps> = ({
+  selectedPerson,
+  setSelectedPerson,
+  List,
+  onSubmit,
+}) => {
+  const [query, setQuery] = useState("");
+  function onSubmitHandler(event: React.FormEvent<HTMLFormElement>, person) {
+    console.log(person);
+    // event.preventDefault();
+    onSubmit(person.value);
+  }
+  const filteredList =
+    query === ""
+      ? List
+      : List.filter((person) =>
+          person.label.toLowerCase().includes(query.toLowerCase())
+        );
+  console.log("selected", selectedPerson);
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          {value
-            ? options.find((option) => option.value === value)?.label
-            : "Select option..."}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search framework..." />
-          <CommandEmpty>No Option found.</CommandEmpty>
-          <CommandGroup>
-            {options.map((option) => (
-              <CommandItem
-                key={option.value}
-                value={option.value}
-                onSelect={() => {
-                  option.value === value ? "" : option.value;
-                  setOpen(false);
-                }}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value === option.value ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {option.label}
-              </CommandItem>
+    <Combobox value={selectedPerson} onChange={setSelectedPerson}>
+      {({ open }) => (
+        <>
+          <Combobox.Input
+            className="border relative p-2 w-[90%] rounded-md focus:outline-none"
+            onChange={(event) => setQuery(event.target.value)}
+            displayValue={(person) => person.label}
+          />
+          <Combobox.Options
+            className={`z-30 absolute w-[20%] flex-col justify-center bg-gray-300 mt-1 ${
+              open ? "block" : "hidden"
+            }`}
+          >
+            {filteredList.map((person) => (
+              <Combobox.Option key={person.value} value={person}>
+                {({ active }) => (
+                  <div
+                    className={`cursor-pointer rounded-md ${
+                      active ? "bg-blue-500 text-white" : "bg-white text-black"
+                    }`}
+                    onClick={(e) => {
+                      onSubmitHandler(e, person);
+                    }}
+                  >
+                    {person.label}
+                  </div>
+                )}
+              </Combobox.Option>
             ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
+          </Combobox.Options>
+        </>
+      )}
+    </Combobox>
   );
-}
+};
+
+export default MyCombobox;

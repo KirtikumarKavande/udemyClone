@@ -6,8 +6,8 @@ import { redirect } from "next/navigation";
 import React from "react";
 import TitleForm from "./_components/title-form";
 import DescriptionForm from "./_components/description-form";
-import Home from "./_components/image-form";
 import ImageForm from "./_components/image-form";
+import CategoryForm from "./_components/category-form";
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
@@ -29,6 +29,15 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
   const completionText = `(${completedFields}/${totalFields})`;
+
+  const categories = await db.category.findMany();
+  console.log(
+    "categories",
+    categories?.map((item) => ({
+      label: item.name,
+      value: item.id,
+    }))
+  );
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">
@@ -49,7 +58,17 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
           </div>
           <TitleForm initialData={course} />
           <DescriptionForm initialData={course} />
-          <ImageForm initialData={course}/>
+          <ImageForm initialData={course} />
+          <CategoryForm
+            initialData={course}
+            options={
+            
+              categories.map((item) => ({
+                label: item.name,
+                value: item.id,
+              }))
+            }
+          />
         </div>
       </div>
     </div>
