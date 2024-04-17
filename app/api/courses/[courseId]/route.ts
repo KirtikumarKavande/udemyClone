@@ -12,7 +12,6 @@ export async function PATCH(
     if (!userId) return new NextResponse("unauthorized", { status: 400 });
     const incomingData = await req.json();
     const { courseId } = params;
-    console.log(courseId);
     await db.course.update({
       where: {
         id: courseId,

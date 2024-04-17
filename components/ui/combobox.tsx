@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { Combobox } from "@headlessui/react";
 
@@ -10,7 +11,7 @@ interface ComboboxProps {
   selectedPerson: Person;
   setSelectedPerson: React.Dispatch<React.SetStateAction<Person>>;
   List: Person[];
-  onSubmit: () => void;
+  onSubmit: (value: string) => void;
 }
 
 const MyCombobox: React.FC<ComboboxProps> = ({
@@ -20,9 +21,8 @@ const MyCombobox: React.FC<ComboboxProps> = ({
   onSubmit,
 }) => {
   const [query, setQuery] = useState("");
-  function onSubmitHandler(event: React.FormEvent<HTMLFormElement>, person) {
+  function onSubmitHandler(person: Person) {
     console.log(person);
-    // event.preventDefault();
     onSubmit(person.value);
   }
   const filteredList =
@@ -31,7 +31,6 @@ const MyCombobox: React.FC<ComboboxProps> = ({
       : List.filter((person) =>
           person.label.toLowerCase().includes(query.toLowerCase())
         );
-  console.log("selected", selectedPerson);
   return (
     <Combobox value={selectedPerson} onChange={setSelectedPerson}>
       {({ open }) => (
@@ -39,10 +38,11 @@ const MyCombobox: React.FC<ComboboxProps> = ({
           <Combobox.Input
             className="border relative p-2 w-[90%] rounded-md focus:outline-none"
             onChange={(event) => setQuery(event.target.value)}
-            displayValue={(person) => person.label}
+            displayValue={(person: Person) => person.label}
+        
           />
           <Combobox.Options
-            className={`z-30 absolute w-[20%] flex-col justify-center bg-gray-300 mt-1 ${
+            className={`z-30 absolute w-[70%] md:w-[20%] flex-col justify-center bg-gray-300 mt-1 ${
               open ? "block" : "hidden"
             }`}
           >
@@ -50,11 +50,11 @@ const MyCombobox: React.FC<ComboboxProps> = ({
               <Combobox.Option key={person.value} value={person}>
                 {({ active }) => (
                   <div
-                    className={`cursor-pointer rounded-md ${
+                    className={`cursor-pointer rounded-md p-2 ${
                       active ? "bg-blue-500 text-white" : "bg-white text-black"
                     }`}
                     onClick={(e) => {
-                      onSubmitHandler(e, person);
+                      onSubmitHandler(person);
                     }}
                   >
                     {person.label}

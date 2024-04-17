@@ -31,13 +31,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const completionText = `(${completedFields}/${totalFields})`;
 
   const categories = await db.category.findMany();
-  console.log(
-    "categories",
-    categories?.map((item) => ({
-      label: item.name,
-      value: item.id,
-    }))
-  );
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">

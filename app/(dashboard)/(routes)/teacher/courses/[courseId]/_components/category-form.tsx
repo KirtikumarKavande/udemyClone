@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { PencilIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -29,22 +29,26 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Textarea } from "@/components/ui/textarea";
-import MyCombobox, { ComboboxComponent } from "@/components/ui/combobox";
+import MyCombobox from "@/components/ui/combobox";
 
 const formSchema = z.object({
   categoryId: z.string().min(1),
 });
 const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [getCategory, setGetCategory] = useState("");
+  const [editCategoryId, setEditCategoryId] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { categoryId: initialData.categoryId || "" },
   });
+  console.log("getCategory", getCategory);
   const router = useRouter();
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(value: string) {
     try {
-      const res = await axios.patch(`/api/courses/${initialData.id}`, values);
+      const res = await axios.patch(`/api/courses/${initialData.id}`, {
+        categoryId: value,
+      });
       toast.success("category updated success");
       router.refresh();
 
@@ -52,12 +56,17 @@ const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
     } catch (error) {
       toast.error("something went wrong");
     }
-    console.log("form", values);
   }
-  const { isSubmitting, isValid } = form.formState;
-  const selectedOption = options.find(
-    (option) => option.value === initialData.categoryId
-  );
+  useEffect(() => {
+    getCategoryFromId();
+  }, [initialData.categoryId]);
+
+  async function getCategoryFromId() {
+    if (!initialData.categoryId) return;
+    const res = await axios.get(`/api/category/${initialData.categoryId}`);
+    setGetCategory(res.data?.name);
+  }
+
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
@@ -78,17 +87,12 @@ const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
       </div>
       {!isEditing && (
         <div className="text-sm ">
-          {initialData?.categoryId || (
-            <p className="text-sm mt-1 italic">No Category</p>
-          )}
+          {getCategory || <p className="text-sm mt-1 italic">No Category</p>}
         </div>
       )}
       {isEditing && (
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
-          >
+          <form className="space-y-4 mt-4">
             <FormField
               control={form.control}
               name="categoryId"
@@ -96,27 +100,15 @@ const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
                 <FormItem>
                   <FormControl>
                     {options && (
-                      <MyCombobox List={options} />
-
-                      // <ComboboxComponent
-                      //   options={options}
-
-                      //   // onChange={(data) => {
-                      //   //   console.log(data);
-                      //   // }}
-                      //   // value={cate}
-                      // />
+                      <MyCombobox List={options} onSubmit={onSubmit} />
                     )}
                   </FormControl>
+                  <p className="text-sm text-red-600">gets saved automatically after Edit</p>
 
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <Button disabled={!isValid || isSubmitting} type="submit">
-              Save
-            </Button>
           </form>
         </Form>
       )}

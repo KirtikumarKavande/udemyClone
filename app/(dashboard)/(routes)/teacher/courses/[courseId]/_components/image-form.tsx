@@ -27,7 +27,6 @@ const ImageForm = ({ initialData }: ImageFormProps) => {
   
   const router = useRouter();
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("values", values);
     try {
       const res = await axios.patch(`/api/courses/${initialData.id}`, values);
       toast.success("Image updated success");
@@ -37,7 +36,6 @@ const ImageForm = ({ initialData }: ImageFormProps) => {
     } catch (error) {
       toast.error("something went wrong");
     }
-    console.log("form", values);
   }
 
   return (
