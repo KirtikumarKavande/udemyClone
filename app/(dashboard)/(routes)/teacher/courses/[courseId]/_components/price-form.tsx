@@ -26,9 +26,10 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { formatPrice } from "@/lib/format";
 
 const formSchema = z.object({
-  price:z.coerce.number()
+  price: z.coerce.number(),
 });
 const PriceForm = ({ initialData }: PriceFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -71,7 +72,9 @@ const PriceForm = ({ initialData }: PriceFormProps) => {
       </div>
       {!isEditing && (
         <div className="text-sm ">
-          {initialData?.price || <p className="text-sm mt-1 italic">No Price Added</p>}
+          {(initialData?.price && formatPrice(initialData?.price)) || (
+            <p className="text-sm mt-1 italic">No Price Added</p>
+          )}
         </div>
       )}
       {isEditing && (
@@ -87,7 +90,7 @@ const PriceForm = ({ initialData }: PriceFormProps) => {
                 <FormItem>
                   <FormControl>
                     <Input
-                    type="number"
+                      type="number"
                       placeholder=" Set a Price for Your Course. "
                       disabled={isSubmitting}
                       {...field}
