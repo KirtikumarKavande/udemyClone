@@ -48,21 +48,19 @@ const AttachmentForm = ({ initialData }: AttachmentFormProps) => {
       toast.error("something went wrong");
     }
   }
-async function onDelete(id:string){
-  try {
-    setDeletingId(id)
-    await axios.delete(`/api/courses/${initialData.id}/attachments/${id}`)
-    toast.success("Attachment deleted successfully")
-    router.refresh()
-
-  } catch (error) {
-    toast.error("something went wrong")
-    
-  }finally{
-    setDeletingId(null)
+  async function onDelete(id: string) {
+    try {
+      setDeletingId(id);
+      await axios.delete(`/api/courses/${initialData.id}/attachments/${id}`);
+      toast.success("Attachment deleted successfully");
+      router.refresh();
+    } catch (error) {
+      toast.error("something went wrong");
+    } finally {
+      setDeletingId(null);
+    }
+    console.log("id ", id);
   }
-  console.log("id ",id)
-}
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
@@ -97,13 +95,15 @@ async function onDelete(id:string){
                   {delectingId === attachment.id && (
                     <Loader2 className="h-4 w-4 mr-2  animate-spin" />
                   )}
-                  {
-                    delectingId!==attachment.id &&(
-                      <button onClick={()=>{onDelete(attachment.id)}}>
-                        <X className="h-4 w-4"/>
-                      </button>
-                    )
-                  }
+                  {delectingId !== attachment.id && (
+                    <button
+                      onClick={() => {
+                        onDelete(attachment.id);
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
