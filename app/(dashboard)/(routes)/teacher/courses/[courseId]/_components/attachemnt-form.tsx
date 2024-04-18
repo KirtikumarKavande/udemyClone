@@ -26,6 +26,7 @@ const AttachmentForm = ({ initialData }: AttachmentFormProps) => {
   const router = useRouter();
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      console.log("kirtikumar",values);
       const res = await axios.post(`/api/courses/${initialData.id}/attachments`, values);
       toast.success("Image updated success");
       router.refresh();
