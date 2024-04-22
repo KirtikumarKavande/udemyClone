@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { PencilIcon } from "lucide-react";
+import { PencilIcon, PlusCircle } from "lucide-react";
 import React, { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,10 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 interface ChaptersFormProps {
-  initialData: {
-    description: string | null;
-    id: string;
-  };
+  initialData: Course & { chapters: Chapter[] };
 }
 
 import {
@@ -27,26 +24,30 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { Chapter, Course } from "@prisma/client";
+import ChaptersList from "./ChaptersList";
 
 const formSchema = z.object({
-  description: z.string().min(2, {
-    message: "description must be at least 2 characters.",
-  }),
+  title: z.string().min(1),
 });
 const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { description: initialData.description || "" },
+    defaultValues: { title: "" },
   });
   const router = useRouter();
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const res = await axios.patch(`/api/courses/${initialData.id}`, values);
-      toast.success("description updated success");
+      const res = await axios.post(
+        `/api/courses/${initialData.id}/chapters`,
+        values
+      );
+      toast.success("chapter added success");
       router.refresh();
 
-      setIsEditing((isEditing) => !isEditing);
+      setIsCreating((isCreating) => !isCreating);
     } catch (error) {
       toast.error("something went wrong");
     }
@@ -60,24 +61,20 @@ const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
         Course Description
         <Button
           variant={"ghost"}
-          onClick={() => setIsEditing((isEditing) => !isEditing)}
+          onClick={() => setIsCreating((isCreating) => !isCreating)}
         >
-          {isEditing ? (
+          {isCreating ? (
             <p>cancel</p>
           ) : (
             <>
-              <PencilIcon className="h-4 w-4 mr-2" />
-              Edit Description
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Add Chapter
             </>
           )}
         </Button>
       </div>
-      {!isEditing && (
-        <div className="text-sm ">
-          {initialData?.description || <p className="text-sm mt-1 italic">No Description</p>}
-        </div>
-      )}
-      {isEditing && (
+
+      {isCreating && (
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -85,11 +82,11 @@ const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
           >
             <FormField
               control={form.control}
-              name="description"
+              name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
+                    <Input
                       placeholder="e.g. This course is about... "
                       disabled={isSubmitting}
                       {...field}
@@ -106,6 +103,26 @@ const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
             </Button>
           </form>
         </Form>
+      )}
+      {!isCreating && (
+        <div
+          className={cn(
+            "text-sm mt-2",
+            !initialData.chapters.length && "text-slate-500 italic "
+          )}
+        >
+          {!initialData.chapters.length && "No Chapters"}
+          <ChaptersList
+            onEdit={() => {}}
+            onReorder={() => {}}
+            items={initialData.chapters || []}
+          />
+        </div>
+      )}
+      {!isCreating && (
+        <p className="text-xs text-muted-foreground mt-4">
+          Drag and Drop to reorder the chapters
+        </p>
       )}
     </div>
   );

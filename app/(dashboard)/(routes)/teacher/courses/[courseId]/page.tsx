@@ -22,13 +22,17 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   if (!userId) redirect("/");
 
   const course = await db.course.findUnique({
-    where: { id: params.courseId },
+    where: { id: params.courseId, userId },
     include: {
+      chapters: {
+        orderBy: {
+          position: "desc",
+        },
+      },
       attachments: {
         orderBy: {
           createdAt: "desc",
         },
-        
       },
     },
   });
@@ -41,6 +45,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     course.imageUrl,
     course.price,
     course.categoryId,
+    course.chapters.some((chapter) => chapter.isPublished),
   ];
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
@@ -86,7 +91,6 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
               <h2 className="text-xl">Course Chapters</h2>
             </div>
             <ChaptersForm initialData={course} />
-
           </div>
           <div>
             <div className="flex items-center gap-x-2">

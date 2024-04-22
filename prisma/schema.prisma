@@ -19,7 +19,7 @@ model Course {
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-  chapter     Chapter[]
+  chapters    Chapter[]
   attachments Attachment[]
 
   purchases Purchases[]
@@ -55,6 +55,7 @@ model Chapter {
   title       String
   description String?  @db.Text
   videoUrl    String?  @db.Text
+  position    Int       @db.Integer
   isPublished Boolean  @default(false)
   isFree      Boolean  @default(false)
   muxData     MuxData?
