@@ -1,29 +1,48 @@
 "use client";
 import { Chapter } from "@prisma/client";
 import React, { useEffect, useState } from "react";
-import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
 import { Badge, Grip, Pencil } from "lucide-react";
 interface chapterListProps {
   items: Chapter[];
-  onReorder: (updateData: { id: string; postion: number }[]) => void;
+  onReorder: (updateData: { id: string; position: number }[]) => void;
   onEdit: (id: string) => void;
 }
 
 const ChaptersList = ({ items, onReorder, onEdit }: chapterListProps) => {
   const [chapters, setChapters] = useState(items);
-
   useEffect(() => {
     setChapters(items);
   }, [items]);
   function handleOnDragEnd(result: DropResult) {
     console.log("result", result);
     if (!result.destination) return;
-    const newBox = Array.from(chapters);
-    const [draggedItem] = newBox.splice(result.source.index, 1);
-    newBox.splice(result.destination.index, 0, draggedItem);
-    setChapters(newBox);
+    const items = Array.from(chapters);
+    const [draggedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, draggedItem);
+    const startIndex = Math.min(result.source.index, result.destination.index);
+    const endIndex = Math.max(result.source.index, result.destination.index);
+    console.log("items", items);
+
+    const updatedChapters = items.slice(startIndex, endIndex + 1);
+
+    console.log("updatedChapters", updatedChapters);
+    setChapters(items);
+
+    const bulkUpdateData = updatedChapters.map((chapter, index) => ({
+      id: chapter.id,
+      position: index + 1,
+    }));
+
+    onReorder(bulkUpdateData);
   }
+
   return (
     <div>
       <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -63,7 +82,10 @@ const ChaptersList = ({ items, onReorder, onEdit }: chapterListProps) => {
                         <div className=" pr-2 px-2 py-1 bg-black text-white rounded-full text-xs  gap-x-2">
                           Draft
                         </div>
-                        <Pencil onClick={() => onEdit(id)} className="w-4 h-4 cursor-pointer hover:opacity-75 transition"/>
+                        <Pencil
+                          onClick={() => onEdit(id)}
+                          className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
+                        />
                       </div>
                     </div>
                   )}
