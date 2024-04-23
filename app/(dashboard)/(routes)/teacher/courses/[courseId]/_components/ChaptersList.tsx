@@ -26,14 +26,18 @@ const ChaptersList = ({ items, onReorder, onEdit }: chapterListProps) => {
     const items = Array.from(chapters);
     const [draggedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, draggedItem);
-
+    const startIndex = Math.min(result.source.index, result.destination.index);
+    const endIndex = Math.max(result.source.index, result.destination.index);
     console.log("items", items);
 
+    const updatedChapters = items.slice(startIndex, endIndex + 1);
+
+    console.log("updatedChapters", updatedChapters);
     setChapters(items);
 
-    const bulkUpdateData = items.map((chapter, index) => ({
+    const bulkUpdateData = updatedChapters.map((chapter, index) => ({
       id: chapter.id,
-      position: items.length - index,
+      position:items.length-(items.findIndex((item)=> item.id === chapter.id)+1),
     }));
 
     onReorder(bulkUpdateData);
