@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { PencilIcon, PlusCircle } from "lucide-react";
+import { Loader2, PencilIcon, PlusCircle } from "lucide-react";
 import React, { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,7 +61,7 @@ const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
       await axios.put(`/api/courses/${initialData.id}/chapters/reorder`, {
         updateData,
       });
-      toast.success("chapters reordered successfully");
+      toast.success("chapters reordered");
       router.refresh();
     } catch (error) {
       toast.error("something went wrong");
@@ -70,7 +70,12 @@ const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
     }
   };
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
+      {isUpdating && (
+        <div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-m flex items-center justify-center">
+          <Loader2 className="animate-spin h-6 w-6 text-sky-700" />
+        </div>
+      )}
       <div className="font-medium flex items-center justify-between">
         Course Description
         <Button
