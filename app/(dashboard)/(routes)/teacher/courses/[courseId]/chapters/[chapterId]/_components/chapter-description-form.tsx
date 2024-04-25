@@ -25,6 +25,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Chapter } from "@prisma/client";
 import Editor from "@/components/editor";
+import Preview from "@/components/preview";
 
 const formSchema = z.object({
   description: z.string().min(1),
@@ -80,7 +81,9 @@ const ChapterDescriptionForm = ({
       </div>
       {!isEditing && (
         <div className="text-sm ">
-          {initialData?.description || (
+          {initialData?.description ? (
+            <Preview value={initialData?.description} />
+          ) : (
             <p className="text-sm mt-1 italic">No Description</p>
           )}
         </div>
@@ -104,7 +107,6 @@ const ChapterDescriptionForm = ({
                 </FormItem>
               )}
             />
-
             <Button disabled={!isValid || isSubmitting} type="submit">
               Save
             </Button>
