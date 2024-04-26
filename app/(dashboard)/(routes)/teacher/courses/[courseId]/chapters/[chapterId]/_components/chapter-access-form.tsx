@@ -81,9 +81,11 @@ const ChapterAccessForm = ({
       {!isEditing && (
         <div className="text-sm ">
           {initialData?.isFree ? (
-           <div className="text-red-600">This Chapter is Free for Preview </div>
+            <div className="text-red-600">
+              This Chapter is Free for Preview{" "}
+            </div>
           ) : (
-           <div className="text-green-600">This Chapter is not Free</div>
+            <div className="text-green-600">This Chapter is not Free</div>
           )}
         </div>
       )}
