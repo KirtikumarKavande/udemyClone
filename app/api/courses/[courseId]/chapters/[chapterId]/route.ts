@@ -1,25 +1,59 @@
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
+import Mux from "@mux/mux-node";
 
 export async function PATCH(
   req: Request,
   { params }: { params: { courseId: string; chapterId: string } }
 ) {
   try {
-    const { userId } =  auth();
+    const { userId } = auth();
     console.log("userId", userId);
-    const {isPublished,...values} = await req.json();
+    const { isPublished, ...values } = await req.json();
     if (!userId) return new NextResponse("unauthorized", { status: 401 });
 
-   console.log(params.courseId)
+    console.log(params.courseId);
     const isOwner = await db.course.findUnique({
       where: {
-        id:params.courseId,
+        id: params.courseId,
         userId,
       },
     });
     if (!isOwner) return new NextResponse("unauthorized", { status: 401 });
+
+    //mux
+    const mux = new Mux({
+      tokenId: process.env.MUX_TOKEN_ID,
+      tokenSecret: process.env.MUX_TOKEN_SECRET,
+    });
+
+    if (values.videoUrl) {
+      const existingMuxData = await db.muxData.findFirst({
+        where: {
+          chapterId: params.chapterId,
+        },
+      });
+
+      if (existingMuxData) {
+        await mux.video.assets.delete(existingMuxData.assetId);
+        await db.muxData.delete({ where: { id: existingMuxData.id } });
+      }
+      const asset = await mux.video.assets.create({
+        input: values.videoUrl,
+        playback_policy: ["public"],
+        test: false,
+      });
+      
+   await db.muxData.create({
+      data:{
+        chapterId:params.chapterId,
+        assetId:asset.id,
+        playbackId:asset.playback_ids?.[0]?.id
+
+      }
+    })
+    }
 
     const chapter = await db.chapter.update({
       where: {
@@ -30,7 +64,7 @@ export async function PATCH(
         ...values,
       },
     });
-//tod handle video upload
+
     return NextResponse.json(chapter);
   } catch (error) {
     console.log("[course chapter id]", error);
