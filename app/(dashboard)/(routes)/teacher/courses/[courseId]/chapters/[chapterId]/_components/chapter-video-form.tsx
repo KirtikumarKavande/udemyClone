@@ -1,17 +1,23 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ImageIcon, Pencil, PencilIcon, PlusCircle, VideoIcon } from "lucide-react";
+import MuxPlayer from "@mux/mux-player-react";
+
+import {
+  ImageIcon,
+  Pencil,
+  PencilIcon,
+  PlusCircle,
+  VideoIcon,
+} from "lucide-react";
 import React, { useState } from "react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import "@uploadthing/react/styles.css";
 
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Chapter, Course, MuxData } from "@prisma/client";
-import Image from "next/image";
+import { Chapter, MuxData } from "@prisma/client";
 import FileUpload from "@/components/file-upload";
 
 interface chapterVideoProps {
@@ -22,7 +28,11 @@ interface chapterVideoProps {
 const formSchema = z.object({
   videoUrl: z.string().min(2),
 });
-const ChapterVideoForm = ({ initialData, courseId, chapterId }: chapterVideoProps) => {
+const ChapterVideoForm = ({
+  initialData,
+  courseId,
+  chapterId,
+}: chapterVideoProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const router = useRouter();
@@ -71,7 +81,7 @@ const ChapterVideoForm = ({ initialData, courseId, chapterId }: chapterVideoProp
           </div>
         ) : (
           <div className="relative aspect-video mt-2 ">
-            video uploaded!
+            <MuxPlayer playbackId={initialData.muxData?.playbackId || ""} />
           </div>
         ))}
       {isEditing && (
@@ -83,12 +93,15 @@ const ChapterVideoForm = ({ initialData, courseId, chapterId }: chapterVideoProp
             }}
           />
           <div className="text-xs text-muted-foreground mt-4">
-      Upload this chapter&apos;s video
+            Upload this chapter&apos;s video
           </div>
         </div>
       )}
       {!isEditing && initialData.videoUrl && (
-        <div className="text-xs text-muted-foreground mt-2 ">Videos can take a few minutes to process. Refresh the page id video does not appear.</div>
+        <div className="text-xs text-muted-foreground mt-2 ">
+          Videos can take a few minutes to process. Refresh the page id video
+          does not appear.
+        </div>
       )}
     </div>
   );
