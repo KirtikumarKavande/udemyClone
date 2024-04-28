@@ -36,10 +36,30 @@ const ChapterActions = ({
     }
   };
 
+  const onClick = async () => {
+    try {
+      if (isPublished) {
+        await axios.patch(
+          `/api/courses/${courseId}/chapters/${chapterId}/unpublish`
+        );
+        toast.success("chapter unpublished successfully");
+      } else {
+        await axios.patch(
+          `/api/courses/${courseId}/chapters/${chapterId}/publish`
+        );
+        toast.success("chapter published successfully");
+      }
+
+      router.refresh();
+    } catch (error) {
+      console.log("something went wrong");
+    }
+  };
+
   return (
-    <div className="flex items-center gap-x-2" >
+    <div className="flex items-center gap-x-2">
       <Button
-        onClick={() => {}}
+        onClick={onClick}
         disabled={disabled || isLoading}
         variant={"outline"}
         size={"sm"}
@@ -48,7 +68,7 @@ const ChapterActions = ({
       </Button>
       <ConfirmModal handleClick={handleDelete}>
         <button className="h-6 w-6" disabled={isLoading}>
-              <Trash className=" fill-black"/>
+          <Trash className=" fill-black" />
         </button>
       </ConfirmModal>
     </div>
