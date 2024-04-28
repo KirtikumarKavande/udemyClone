@@ -37,7 +37,8 @@ const ChaptersList = ({ items, onReorder, onEdit }: chapterListProps) => {
 
     const bulkUpdateData = updatedChapters.map((chapter, index) => ({
       id: chapter.id,
-      position:items.length-(items.findIndex((item)=> item.id === chapter.id)+1),
+      position:
+        items.length - (items.findIndex((item) => item.id === chapter.id) + 1),
     }));
 
     onReorder(bulkUpdateData);
@@ -57,14 +58,12 @@ const ChaptersList = ({ items, onReorder, onEdit }: chapterListProps) => {
                       {...provided.dragHandleProps}
                       {...provided.draggableProps}
                       className={cn(
-                        "flex items-center  gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md mb-4 text-sm",
-                        isPublished && "bg-sky-100 border-sky-200 text-sky-200"
+                        "flex items-center  gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md mb-4 text-sm"
                       )}
                     >
                       <div
                         className={cn(
-                          "flex  w-full justify-between px-2 py-3 border-r-slate-200 hover:bg-slate-300 rounded-l-md transition",
-                          isPublished && "border-r-sky-200 hover:bg-sky-200"
+                          "flex  w-full justify-between px-2 py-3 border-r-slate-200 hover:bg-slate-300 rounded-l-md transition"
                         )}
                       >
                         <div>
@@ -80,7 +79,7 @@ const ChaptersList = ({ items, onReorder, onEdit }: chapterListProps) => {
                           )}
                         </div>
                         <div className=" pr-2 px-2 py-1 bg-black text-white rounded-full text-xs  gap-x-2">
-                          Draft
+                          {isPublished ? "Published" : "Draft"}
                         </div>
                         <Pencil
                           onClick={() => onEdit(id)}

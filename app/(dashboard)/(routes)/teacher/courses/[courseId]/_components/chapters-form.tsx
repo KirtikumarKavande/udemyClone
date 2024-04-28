@@ -81,7 +81,7 @@ const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
         </div>
       )}
       <div className="font-medium flex items-center justify-between">
-        Course Description
+   Chapter Names
         <Button
           variant={"ghost"}
           onClick={() => setIsCreating((isCreating) => !isCreating)}
