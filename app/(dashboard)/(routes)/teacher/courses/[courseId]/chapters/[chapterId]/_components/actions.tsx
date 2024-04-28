@@ -22,7 +22,7 @@ const Actions = ({ disabled, courseId, isPublished }: ActionsProps) => {
       await axios.delete(`/api/courses/${courseId}`);
       toast.success("Course deleted successfully");
       router.refresh();
-      // router.push(`/teacher/courses`);
+      router.push(`/teacher/courses`);
     } catch (error) {
       toast.error("something went wrong");
     } finally {
