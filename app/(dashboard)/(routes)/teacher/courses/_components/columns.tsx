@@ -49,6 +49,15 @@ export const columns: ColumnDef<Course>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const price =parseFloat(row.getValue("price")||"0") ;
+      const formatted=new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+
+      }).format(price);
+      return <div>{formatted}</div>
+    }
   },
   {
     accessorKey: "isPublished",
@@ -64,6 +73,14 @@ export const columns: ColumnDef<Course>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const isPublished = row.getValue("isPublished") || false;
+      return (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-black text-white">
+          {isPublished ? "Published" : "Draft"}
+        </span>
+      );
+    },
   },
   {
     id: "actions",
@@ -74,17 +91,16 @@ export const columns: ColumnDef<Course>[] = [
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <Link href={`/teacher/courses/${id}`}>
               <DropdownMenuItem>
                 <div className="flex items-center justify-center">
-                <Pencil className="mr-2 h-4 w-4" />
-                <span>Edit</span>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  <span>Edit</span>
                 </div>
-           
               </DropdownMenuItem>
             </Link>
           </DropdownMenuContent>
