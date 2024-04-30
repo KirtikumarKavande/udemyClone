@@ -42,7 +42,6 @@ const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: { categoryId: initialData.categoryId || "" },
   });
-  console.log("getCategory", getCategory);
   const router = useRouter();
   async function onSubmit(value: string) {
     try {

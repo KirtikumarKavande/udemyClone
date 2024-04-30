@@ -54,12 +54,10 @@ const ChapterDescriptionForm = ({
     } catch (error) {
       toast.error("something went wrong");
     }
-    console.log("form", values);
   }
   const { isSubmitting, isValid } = form.formState;
 
   function onStartTyping(data: string) {
-    console.log("typing", data);
   }
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">

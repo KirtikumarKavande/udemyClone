@@ -16,7 +16,6 @@ const EditChapter = async ({
 }: {
   params: { courseId: string; chapterId: string };
 }) => {
-  console.log("params", params);
   const { userId } = auth();
   if (!userId) {
     return redirect("/");

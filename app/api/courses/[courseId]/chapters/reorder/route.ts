@@ -19,7 +19,6 @@ export async function PUT(
     });
     if (!isOwner) return new NextResponse("unauthorized", { status: 401 });
     const { updateData } = await req.json();
-    console.log(updateData)
     for (let chapter of updateData) {
      const response= await db.chapter.update({
         data: {

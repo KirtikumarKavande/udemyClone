@@ -50,7 +50,6 @@ const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
     } catch (error) {
       toast.error("something went wrong");
     }
-    console.log("form", values);
   }
   const { isSubmitting, isValid } = form.formState;
 

@@ -22,7 +22,6 @@ const MyCombobox: React.FC<ComboboxProps> = ({
 }) => {
   const [query, setQuery] = useState("");
   function onSubmitHandler(person: Person) {
-    console.log(person);
     onSubmit(person.value);
   }
   const filteredList =

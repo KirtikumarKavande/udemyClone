@@ -35,7 +35,6 @@ const AttachmentForm = ({ initialData }: AttachmentFormProps) => {
   const router = useRouter();
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      console.log("kirtikumar", values);
       const res = await axios.post(
         `/api/courses/${initialData.id}/attachments`,
         values
@@ -59,7 +58,6 @@ const AttachmentForm = ({ initialData }: AttachmentFormProps) => {
     } finally {
       setDeletingId(null);
     }
-    console.log("id ", id);
   }
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
