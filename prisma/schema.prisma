@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -28,6 +29,7 @@ model Course {
   updatedAt DateTime @updatedAt
 
   @@index([categoryId])
+  @@fulltext([title])
 }
 
 model Category {
@@ -55,7 +57,7 @@ model Chapter {
   title       String
   description String?  @db.Text
   videoUrl    String?  @db.Text
-  position    Int       @db.Integer
+  position    Int      @db.Integer
   isPublished Boolean  @default(false)
   isFree      Boolean  @default(false)
   muxData     MuxData?
