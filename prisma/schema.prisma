@@ -29,7 +29,6 @@ model Course {
   updatedAt DateTime @updatedAt
 
   @@index([categoryId])
-  @@fulltext([title])
 }
 
 model Category {
@@ -105,8 +104,9 @@ model Purchases {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+@@unique([userId, courseId])
   @@index([userId, courseId])
+
 }
 
 model StripeCustomer {
