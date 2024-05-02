@@ -26,7 +26,7 @@ const CourseSidebarItem = ({
 
   const isActive = pathName?.includes(id);
   const onClick = () => {
-    router.push(`/course/${courseId}/chapters/${id}`);
+    router.push(`/courses/${courseId}/chapters/${id}`);
   };
   return (
     <button
@@ -35,7 +35,7 @@ const CourseSidebarItem = ({
       className={cn(
         "flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-sky-600 hover:bg-slate-300/20",
         isActive &&
-          "text-slate-200/20 bg-slate-700 hover:bg-slate-200/20 hover:text-slate-700",
+          "text-black bg-slate-200 hover:bg-slate-200/20 hover:text-slate-700",
         isCompleted && "text-emerald-700 hover:text-emerald-700 ",
         isCompleted && isActive && "bg-emerald-200/20"
       )}
@@ -44,8 +44,8 @@ const CourseSidebarItem = ({
         <Icon
           size={22}
           className={cn(
-            "text-slate-500",
-            isActive && "text-slate-700",
+            "text-black",
+            isActive && "text-black",
             isCompleted && "text-emerald-700"
           )}
         />
