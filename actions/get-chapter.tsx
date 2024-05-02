@@ -18,11 +18,11 @@ import React from "react";
 interface ChapterData {
   chapter: Chapter | null;
   course: Course | null;
-  muxData: MuxData | null; // Adjust the type accordingly
-  attachments: Attachment[] | null; // Define the Attachment type
-  nextChapter: Chapter | null; // Define the Chapter type
-  userProgress: UserProgress | null; // Adjust the type accordingly
-  purchase: Purchases | null; // Adjust the type accordingly
+  muxData: MuxData | null;
+  attachments: Attachment[] | null;
+  nextChapter: Chapter | null;
+  userProgress: UserProgress | null;
+  purchase: Purchases | null;
 }
 
 const getChapter = async ({
