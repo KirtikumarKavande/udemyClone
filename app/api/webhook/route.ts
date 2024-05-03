@@ -18,13 +18,14 @@ export async function POST(req: Request) {
       process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (error) {
-    return NextResponse.json("webhook error", { status: 400 });
+    return NextResponse.json(`webhook Error: ${error}`, { status: 400 });
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
 
   const userId = session?.metadata?.userId;
   const courseId = session?.metadata?.courseId;
+  console.log("event type", event.type,courseId,userId);
 
   if (event.type === "checkout.session.completed") {
     if (!userId || !courseId) {
@@ -34,14 +35,14 @@ export async function POST(req: Request) {
     }
     await db.purchases.create({
       data: {
-        courseId,
-        userId,
+        courseId: courseId,
+        userId: userId,
       },
     });
-  }else{
+  } else {
     return new NextResponse("webhook Error:Unhandled event type ", {
-        status: 200,
-    })
+      status: 200,
+    });
   }
 
   return new NextResponse(null, { status: 200 });

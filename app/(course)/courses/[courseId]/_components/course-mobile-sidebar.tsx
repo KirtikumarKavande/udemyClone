@@ -24,7 +24,6 @@ const CourseMobileSidebar = ({
     setIsOpen(!isOpen);
   };
 
-  console.log("isOPen", isOpen);
   return (
     <div>
       <div>
