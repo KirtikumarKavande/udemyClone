@@ -1,8 +1,11 @@
 "use client";
 import { cn } from "@/lib/utils";
 import MuxPlayer from "@mux/mux-player-react";
+import axios from "axios";
 import { Loader2, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 interface VideoPlayerProps {
   playbackId: string;
   courseId: string;
@@ -22,6 +25,33 @@ const VideoPlayer = ({
   title,
 }: VideoPlayerProps) => {
   const [isReady, setIsReady] = useState(false);
+  const router = useRouter();
+  const onEnd = async () => {
+    try {
+      if (completeOnEnd) {
+        await axios.put(
+          `/api/courses/${courseId}/chapters/${chapterId}/progress`,
+          {
+            isCompleted: true,
+          }
+        );
+
+        if (!nextChapterId) {
+          toast.success(
+            "Congratulations for Successfully completion of course"
+          );
+        }
+        toast.success("progress Updated Successfully");
+        router.refresh();
+
+        if (nextChapterId) {
+          router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
+        }
+      }
+    } catch (error) {
+      toast.error("something went wrong");
+    }
+  };
   return (
     <div className="relative aspect-video">
       {!isReady && !isLocked && (
@@ -42,7 +72,7 @@ const VideoPlayer = ({
           className={cn(!isReady && "hidden")}
           onCanPlay={() => setIsReady(true)}
           playbackId={playbackId}
-          onEnded={() => {}}
+          onEnded={onEnd}
           autoPlay
         />
       )}
