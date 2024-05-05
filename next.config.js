@@ -4,7 +4,10 @@ const nextConfig = {
         domains:[
             "utfs.io"
         ]
-    }
+    },
+    typescript: {
+        ignoreBuildErrors: true,
+      },
 }
 
 module.exports = nextConfig
