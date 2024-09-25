@@ -15,7 +15,7 @@ const CourseEnrollButton = ({ price, courseId }: CourseEnrollButtonProps) => {
   const onClick = async () => {
     try {
       setIsLoading(true);
-
+      alert("copy this card number for payment 4000003560000008")
       const response = await axios.post(`/api/courses/${courseId}/checkout`);
 
       window.location.assign(response.data.url);
@@ -32,6 +32,7 @@ const CourseEnrollButton = ({ price, courseId }: CourseEnrollButtonProps) => {
         onClick={onClick}
         disabled={isLoading}
       >
+
         Enroll for {formatPrice(price)}
       </Button>
     </div>
